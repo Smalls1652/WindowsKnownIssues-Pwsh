@@ -177,7 +177,7 @@ function Get-WindowsServicingInfo {
         $Windows10VersionPage = Invoke-WebRequest -Uri "https://winreleaseinfoprod.blob.core.windows.net/winreleaseinfoprod/en-US.html"
     
         switch ($PSCmdlet.ParameterSetName) {
-            { "ServiceChannel" } {
+            "ServiceChannel" {
                 switch ($ServicingChannel) {
     
                     "Semi-Annual Channel" {
@@ -194,7 +194,7 @@ function Get-WindowsServicingInfo {
                     param($Version)
                     $Groups = $Version.Groups
     
-                    $Obj = New-Object -TypeName pscustomobject -Property @{
+                    $Obj = [pscustomobject] @{
                         "Version"           = ($Groups | Where-Object -Property "Name" -EQ "windowsVersion" | Select-Object -ExpandProperty "Value");
                         "ServiceChannel"    = ($Groups | Where-Object -Property "Name" -EQ "serviceChannel" | Select-Object -ExpandProperty "Value");
                         "ReleaseDate"       = ($Groups | Where-Object -Property "Name" -EQ "releaseDate" | Select-Object -ExpandProperty "Value" | ConvertToDate);
@@ -213,7 +213,7 @@ function Get-WindowsServicingInfo {
                 }
             }
     
-            { "VersionNumber" } {
+            "VersionNumber" {
                 $TableRegex = "<h4>.*Version $($WindowsVersion)\s\(OS build \d{5}\).*\n<\/a><\/h4>\s*<table.*>\s*<tr>(?:(?s).*?)<\/tr>\s*((?s).*?)<\/table>"
                 $VersionInfoRegex = "<tr>\s*<td>(?'buildNumber'.*?)<\/td>\s*<td>(?'releaseDate'.*?)<\/td>\s*<td>(?'ServiceChannel'.*?)<\/td>\s*<td>(?:<a.*>(?'updateKB'.*?)<\/a>|)<\/td>\s*<\/tr>"
     
@@ -230,7 +230,7 @@ function Get-WindowsServicingInfo {
                     }
     
                     $Obj = New-Object -TypeName pscustomobject -Property @{
-                        "Version" = $WindowsVersion
+                        "Version"        = $WindowsVersion
                         "BuildNumber"    = ($Groups | Where-Object -Property "Name" -EQ "buildNumber" | Select-Object -ExpandProperty "Value");
                         "ReleaseDate"    = ($Groups | Where-Object -Property "Name" -EQ "releaseDate" | Select-Object -ExpandProperty "Value" | ConvertToDate);
                         "ServiceChannel" = (($Groups | Where-Object -Property "Name" -EQ "ServiceChannel" | Select-Object -ExpandProperty "Value") -replace " <span> &bull; </span> ", "," -split ",");
@@ -253,8 +253,7 @@ function Get-WindowsServicingInfo {
     }
     
     process {
-        $ReturnData = @()
-        foreach ($Version in $VersionInfo) {
+        $ReturnData = foreach ($Version in $VersionInfo) {
             switch ($PSCmdlet.ParameterSetName) {
                 "ServiceChannel" {
                     $ParseDataSplat = @{
@@ -268,7 +267,7 @@ function Get-WindowsServicingInfo {
                     }
                 }
             }
-            $ReturnData += (ParseData @ParseDataSplat)
+            ParseData @ParseDataSplat
         }
     }
     
