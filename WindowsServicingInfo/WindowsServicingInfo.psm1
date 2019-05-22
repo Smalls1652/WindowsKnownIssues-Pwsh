@@ -17,7 +17,7 @@ function Get-WindowsKnownIssues {
 
     [CmdletBinding()]
     param(
-        [ValidateSet("Windows 10 1809", "Windows 10 1803", "Windows 10 1709", "Windows 10 1703", "Windows 10 1607", "Windows 10 1507", "Windows Server 2019", "Windows Server 2016")][string]$WindowsVersion = "Windows 10 1809"
+        [ValidateSet("Windows 10 1903","Windows 10 1809", "Windows 10 1803", "Windows 10 1709", "Windows 10 1703", "Windows 10 1607", "Windows 10 1507", "Windows Server 2019", "Windows Server 2016")][string]$WindowsVersion = "Windows 10 1903"
     )
 
     begin {
@@ -25,6 +25,10 @@ function Get-WindowsKnownIssues {
         #Setting $StatusPageUri to the YAML document for the respective Windows version found on Microsoft's Docs GitHub.
         Write-Verbose "Windows version set to '$($WindowsVersion)'."
         switch ($WindowsVersion) {
+            "Windows 10 1903" {
+                $StatusPageUri = "https://raw.githubusercontent.com/MicrosoftDocs/windows-itpro-docs/master/windows/release-information/status-windows-10-1903.yml"
+            }
+
             { ($PSItem -eq "Windows 10 1809") -or ($PSItem -eq "Windows Server 2019") } {
                 $StatusPageUri = "https://raw.githubusercontent.com/MicrosoftDocs/windows-itpro-docs/master/windows/release-information/status-windows-10-1809-and-windows-server-2019.yml"
             }
