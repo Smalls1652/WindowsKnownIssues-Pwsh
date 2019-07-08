@@ -74,7 +74,7 @@ function Get-WindowsKnownIssues {
         $StatusPageRegex = '- title: Known issues\n.*\n.*\n.*text:.\"((?s).*?)\"\n'
         $KnownIssuesTableRegex = "<tr><td><div id='.*?'><\/div><b>(?'issueTitle'.*?)<\/b><br>(?'issueDetails'.*?)<br>.*<\/td><td>OS Build (?'originalUpdateBuild'.*?)<br><br>(?'originalUpdateRelease'.*?)<br><a .*?>(?'originalUpdateKB'.*?)<\/a><\/td><td>(?'status'.*?)<br><a .*?>(?:(?'resolvedKB'KB.*?)|.*)<\/a><\/td><td>(?'lastUpdatedDate'.*)<br>(?'lastUpdatedTime'.*?) PT<\/td><\/tr>"
 
-        $StatusPage = Invoke-WebRequest -Uri $StatusPageUri
+        $StatusPage = Invoke-WebRequest -Uri $StatusPageUri -UseBasicParsing
 
         Write-Verbose "Parsing for the 'Known Issues' section in data."
         $KnownIssuesSection = ([regex]::Match($StatusPage.Content, $StatusPageRegex).Groups[1]).Value
@@ -178,7 +178,7 @@ function Get-WindowsServicingInfo {
             }
         }
     
-        $Windows10VersionPage = Invoke-WebRequest -Uri "https://winreleaseinfoprod.blob.core.windows.net/winreleaseinfoprod/en-US.html"
+        $Windows10VersionPage = Invoke-WebRequest -Uri "https://winreleaseinfoprod.blob.core.windows.net/winreleaseinfoprod/en-US.html" -UseBasicParsing
     
         switch ($PSCmdlet.ParameterSetName) {
             "ServiceChannel" {
